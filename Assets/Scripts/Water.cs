@@ -6,15 +6,20 @@ public class Water : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && respawnPoint != null)
         {
-            if (respawnPoint != null)
+            GameManager.instance.lives--;
+            
+            if (GameManager.instance.lives > 0)
             {
-                GameManager.instance.PlayerDiedAtCheckpoint(respawnPoint.position);
+                other.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+                other.transform.position = respawnPoint.position;
             }
             else
             {
-                GameManager.instance.PlayerDied(transform.position);
+                other.gameObject.SetActive(false);
+                GameManager.instance.gameOverPanel.SetActive(true);
+                Time.timeScale = 0f;
             }
         }
     }

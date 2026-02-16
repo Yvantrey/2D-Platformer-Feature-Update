@@ -46,10 +46,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (player != null && !isRespawning && player.position.y > -10f)
-        {
-            lastSafePosition = player.position;
-        }
+        // Removed lastSafePosition tracking
     }
 
     public void PlayerDied(Vector3 waterPosition)
@@ -71,6 +68,8 @@ public class GameManager : MonoBehaviour
 
     public void PlayerDiedAtCheckpoint(Vector3 checkpointPosition)
     {
+        Debug.Log("PlayerDiedAtCheckpoint called with position: " + checkpointPosition);
+        
         if (isRespawning) return;
         
         isRespawning = true;
@@ -78,6 +77,7 @@ public class GameManager : MonoBehaviour
 
         if (lives > 0)
         {
+            Debug.Log("Starting respawn coroutine with position: " + checkpointPosition);
             StartCoroutine(RespawnCoroutine(checkpointPosition));
         }
         else
@@ -88,6 +88,8 @@ public class GameManager : MonoBehaviour
 
     System.Collections.IEnumerator RespawnCoroutine(Vector3 respawnPosition)
     {
+        Debug.Log("RespawnCoroutine started with position: " + respawnPosition);
+        
         if (player == null) yield break;
 
         player.gameObject.SetActive(false);
@@ -97,6 +99,7 @@ public class GameManager : MonoBehaviour
         if (playerRB != null)
             playerRB.linearVelocity = Vector2.zero;
         
+        Debug.Log("Setting player position to: " + respawnPosition);
         player.position = respawnPosition;
         player.gameObject.SetActive(true);
         
@@ -125,8 +128,8 @@ public class GameManager : MonoBehaviour
 
     public void BossDefeated()
     {
-        if (winPanel != null)
-            winPanel.SetActive(true);
+        if (gameOverPanel != null)
+            gameOverPanel.SetActive(true);
         
         Time.timeScale = 0f;
     }
